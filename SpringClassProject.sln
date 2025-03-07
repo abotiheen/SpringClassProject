@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.13.35825.156 d17.13
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SpringClassProject", "SpringClassProject\SpringClassProject.csproj", "{2F77C4B2-003E-4055-AE50-9F49C046BE67}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{2F77C4B2-003E-4055-AE50-9F49C046BE67}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2F77C4B2-003E-4055-AE50-9F49C046BE67}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2F77C4B2-003E-4055-AE50-9F49C046BE67}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2F77C4B2-003E-4055-AE50-9F49C046BE67}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {7F69C148-A069-4CAF-8AFD-8F79C72FAD37}
+	EndGlobalSection
+EndGlobal
