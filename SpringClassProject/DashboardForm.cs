@@ -10,7 +10,8 @@ public class DashboardForm : Form
     private GroupBox quickActionsGroup;
     private Button btnAddStudent;
     private Button btnViewStudents;
-    private Button btnSearchStudents;
+    private Button btnGenerateReport;
+    private Label lblRoleIndicator;
 
     public DashboardForm()
     {
@@ -20,16 +21,25 @@ public class DashboardForm : Form
         this.FormBorderStyle = FormBorderStyle.FixedDialog;
         this.BackColor = ColorTranslator.FromHtml("#3A0F3A");
 
+        // Role Indicator Label at top-right
+        lblRoleIndicator = new Label()
+        {
+            Text = "Role: " + UserSession.Role,
+            Font = new Font("Arial", 12, FontStyle.Bold),
+            ForeColor = Color.White,
+            AutoSize = true,
+            Location = new Point(520, 5)
+        };
+        this.Controls.Add(lblRoleIndicator);
+
         menuStrip = new MenuStrip()
         {
             BackColor = ColorTranslator.FromHtml("#4A154B"),
             Font = new Font("Arial", 14, FontStyle.Bold),
             ForeColor = Color.White
         };
-
         ToolStripMenuItem fileMenu = new ToolStripMenuItem("File") { ForeColor = Color.White };
         ToolStripMenuItem helpMenu = new ToolStripMenuItem("Help") { ForeColor = Color.White };
-
         menuStrip.Items.Add(fileMenu);
         menuStrip.Items.Add(helpMenu);
         this.MainMenuStrip = menuStrip;
@@ -42,11 +52,9 @@ public class DashboardForm : Form
             Height = 40,
             GripStyle = ToolStripGripStyle.Hidden
         };
-
         ToolStripButton toolAddStudent = CreateSmallToolStripButton("➕", "Add Student");
         ToolStripButton toolViewStudents = CreateSmallToolStripButton("📄", "View Students");
         ToolStripButton toolSearchStudents = CreateSmallToolStripButton("🔍", "Search Students");
-
         toolStrip.Items.Add(toolAddStudent);
         toolStrip.Items.Add(toolViewStudents);
         toolStrip.Items.Add(toolSearchStudents);
@@ -73,12 +81,20 @@ public class DashboardForm : Form
 
         btnAddStudent = CreateActionButton("Add Student", new Point(40, 50));
         btnViewStudents = CreateActionButton("View Students", new Point(240, 50));
-        btnSearchStudents = CreateActionButton("Search Students", new Point(440, 50));
+        btnGenerateReport = CreateActionButton("Generate Report", new Point(440, 50));
 
+        // Quick action events
         btnAddStudent.Click += (sender, e) =>
         {
-            AddStudentForm addStudentForm = new AddStudentForm();
-            addStudentForm.ShowDialog();
+            if (UserSession.Role.Equals("Teacher", StringComparison.OrdinalIgnoreCase))
+            {
+                MessageBox.Show("You do not have permission to add students.", "Access Denied", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            }
+            else
+            {
+                AddStudentForm addStudentForm = new AddStudentForm();
+                addStudentForm.ShowDialog();
+            }
         };
 
         btnViewStudents.Click += (sender, e) =>
@@ -87,16 +103,24 @@ public class DashboardForm : Form
             viewStudentsForm.ShowDialog();
         };
 
-        btnSearchStudents.Click += (sender, e) =>
+        btnGenerateReport.Click += (sender, e) =>
         {
-            ViewStudentsForm viewStudentsForm = new ViewStudentsForm();
-            viewStudentsForm.ShowDialog();
+            ReportForm reportForm = new ReportForm();
+            reportForm.ShowDialog();
         };
 
+        // ToolStrip events
         toolAddStudent.Click += (sender, e) =>
         {
-            AddStudentForm addStudentForm = new AddStudentForm();
-            addStudentForm.ShowDialog();
+            if (UserSession.Role.Equals("Teacher", StringComparison.OrdinalIgnoreCase))
+            {
+                MessageBox.Show("You do not have permission to add students.", "Access Denied", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            }
+            else
+            {
+                AddStudentForm addStudentForm = new AddStudentForm();
+                addStudentForm.ShowDialog();
+            }
         };
 
         toolViewStudents.Click += (sender, e) =>
@@ -111,10 +135,9 @@ public class DashboardForm : Form
             viewStudentsForm.ShowDialog();
         };
 
-
         quickActionsGroup.Controls.Add(btnAddStudent);
         quickActionsGroup.Controls.Add(btnViewStudents);
-        quickActionsGroup.Controls.Add(btnSearchStudents);
+        quickActionsGroup.Controls.Add(btnGenerateReport);
         this.Controls.Add(quickActionsGroup);
     }
 

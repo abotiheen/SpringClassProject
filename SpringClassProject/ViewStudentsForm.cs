@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
@@ -11,6 +10,8 @@ public class ViewStudentsForm : Form
     private ComboBox cmbSearchClass;
     private Button btnSearch;
     private Button btnReset;
+    private Button btnEdit;
+    private Button btnDelete;
 
     public ViewStudentsForm()
     {
@@ -66,16 +67,24 @@ public class ViewStudentsForm : Form
         cmbSearchClass.Items.AddRange(new string[] { "Computer Science", "Physics", "Archeology", "History", "Psychology" });
         cmbSearchClass.SelectedIndex = 0;
 
-        btnSearch = CreateButton("🔍 Search", new Point(500, 100));
+        btnSearch = CreateButton("🔍 Search", new Point(500, 60));
         btnSearch.Click += BtnSearch_Click;
 
-        btnReset = CreateButton("🔄 Reset", new Point(500, 140));
+        btnReset = CreateButton("🔄 Reset", new Point(500, 100));
         btnReset.Click += BtnReset_Click;
+
+        btnEdit = CreateButton("✎ Edit", new Point(500, 140));
+        btnEdit.BackColor = ColorTranslator.FromHtml("#E3B34C");
+        btnEdit.Click += BtnEdit_Click;
+
+        btnDelete = CreateButton("✖ Delete", new Point(500, 180));
+        btnDelete.BackColor = ColorTranslator.FromHtml("#EB344C");
+        btnDelete.Click += BtnDelete_Click;
 
         dgvStudents = new DataGridView()
         {
             Size = new Size(560, 200),
-            Location = new Point(40, 200),
+            Location = new Point(40, 220),
             BackgroundColor = Color.White,
             ForeColor = Color.Black,
             Font = new Font("Arial", 12),
@@ -99,11 +108,20 @@ public class ViewStudentsForm : Form
         formContainer.Controls.Add(cmbSearchClass);
         formContainer.Controls.Add(btnSearch);
         formContainer.Controls.Add(btnReset);
+        formContainer.Controls.Add(btnEdit);
+        formContainer.Controls.Add(btnDelete);
         formContainer.Controls.Add(dgvStudents);
 
         this.Controls.Add(formContainer);
 
         PopulateDataGridView();
+
+        // Role-based access: if Teacher, hide Edit and Delete
+        if (UserSession.Role.Equals("Teacher", StringComparison.OrdinalIgnoreCase))
+        {
+            btnEdit.Visible = false;
+            btnDelete.Visible = false;
+        }
     }
 
     private Label CreateLabel(string text, Point location)
@@ -180,5 +198,56 @@ public class ViewStudentsForm : Form
         txtSearchName.Clear();
         cmbSearchClass.SelectedIndex = 0;
         PopulateDataGridView();
+    }
+
+    private void BtnEdit_Click(object sender, EventArgs e)
+    {
+        if (dgvStudents.SelectedRows.Count > 0)
+        {
+            var row = dgvStudents.SelectedRows[0];
+            string name = row.Cells["Name"].Value.ToString();
+            Student student = StudentManager.Students.FirstOrDefault(s => s.Name == name);
+            if (student != null)
+            {
+                EditStudentForm editForm = new EditStudentForm(student);
+                editForm.ShowDialog();
+                PopulateDataGridView();
+            }
+            else
+            {
+                MessageBox.Show("Student not found.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+        else
+        {
+            MessageBox.Show("Please select a student to edit.", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+        }
+    }
+
+    private void BtnDelete_Click(object sender, EventArgs e)
+    {
+        if (dgvStudents.SelectedRows.Count > 0)
+        {
+            var row = dgvStudents.SelectedRows[0];
+            string name = row.Cells["Name"].Value.ToString();
+            Student student = StudentManager.Students.FirstOrDefault(s => s.Name == name);
+            if (student != null)
+            {
+                var result = MessageBox.Show("Are you sure you want to delete this student?", "Confirmation", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+                if (result == DialogResult.Yes)
+                {
+                    StudentManager.Students.Remove(student);
+                    PopulateDataGridView();
+                }
+            }
+            else
+            {
+                MessageBox.Show("Student not found.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+        else
+        {
+            MessageBox.Show("Please select a student to delete.", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+        }
     }
 }

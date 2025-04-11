@@ -105,11 +105,21 @@ public class LoginForm : Form
         string username = txtUsername.Text;
         string password = txtPassword.Text;
 
-        if (username == "zain" && password == "1234")
+        // Admin credentials
+        if (username == "dhrgam" && password == "1234")
         {
+            UserSession.Role = "Admin";
             DashboardForm dashboard = new DashboardForm();
             dashboard.Show();
-            this.Hide(); ;
+            this.Hide();
+        }
+        // Teacher credentials
+        else if (username == "zain" && password == "1234")
+        {
+            UserSession.Role = "Teacher";
+            DashboardForm dashboard = new DashboardForm();
+            dashboard.Show();
+            this.Hide();
         }
         else
         {
